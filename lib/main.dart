@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -27,6 +27,7 @@ class BreakfastCheckPage extends StatefulWidget {
 }
 
 class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
+  late final Box<InputForm> box;
   final List<InputForm> users = [
     InputForm(name: '유현명', isCheck: false),
     InputForm(name: '김민채', isCheck: false),
@@ -36,11 +37,15 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
   @override
   void initState() {
     super.initState();
+    _openBox();
+  }
+
+  _openBox() async {
+    box = await Hive.openBox<InputForm>('checks');
     _loadChecks();
   }
 
-  _loadChecks() async {
-    var box = await Hive.openBox<InputForm>('checks');
+  _loadChecks() {
     if (box.isNotEmpty) {
       users.clear();
       users.addAll(box.values);
@@ -52,11 +57,15 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
     setState(() {});
   }
 
-  _saveCheck(int index, bool value) async {
-    var box = await Hive.openBox<InputForm>('checks');
+  _saveCheck(int index, bool value) {
     var user = box.getAt(index);
     if (user != null) {
       user.isCheck = value;
+      if (value) {
+        user.checkedTime = DateTime.now();
+      } else {
+        user.checkedTime = null;
+      }
       box.putAt(index, user);
     }
   }
@@ -79,10 +88,15 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
       body: ListView.builder(
         itemCount: users.length,
         itemBuilder: (context, index) {
-          return CheckboxListTile(
+          return ListTile(
             title: Text(users[index].name),
-            value: users[index].isCheck,
-            onChanged: (value) => _toggleCheck(index, value),
+            trailing: users[index].isCheck && users[index].checkedTime != null
+                ? Text(DateFormat('yy년 MM월 dd일 HH시 mm분 ss초').format(users[index].checkedTime!))
+                : null,
+            leading: Checkbox(
+              value: users[index].isCheck,
+              onChanged: (value) => _toggleCheck(index, value),
+            ),
           );
         },
       ),
@@ -94,6 +108,7 @@ class InputForm {
   InputForm({
     required this.name,
     required this.isCheck,
+    this.checkedTime,
   });
 
   @HiveField(0)
@@ -101,6 +116,9 @@ class InputForm {
 
   @HiveField(1)
   bool isCheck;
+
+  @HiveField(2)
+  DateTime? checkedTime;
 }
 
 class InputFormAdapter extends TypeAdapter<InputForm> {
@@ -112,6 +130,7 @@ class InputFormAdapter extends TypeAdapter<InputForm> {
     return InputForm(
       name: reader.read(),
       isCheck: reader.read(),
+      checkedTime: reader.read(),
     );
   }
 
@@ -119,5 +138,6 @@ class InputFormAdapter extends TypeAdapter<InputForm> {
   void write(BinaryWriter writer, InputForm obj) {
     writer.write(obj.name);
     writer.write(obj.isCheck);
+    writer.write(obj.checkedTime);
   }
 }
