@@ -90,3 +90,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+fonts:
+	- family: Jalnan2
+	  fonts:
+	    - asset: assets/fonts/Jalnan2/Jalnan2.otf
+	      weight: 300
+	    - asset: assets/fonts/Jalnan2/Jalnan2TTF.ttf
+	      weight: 500

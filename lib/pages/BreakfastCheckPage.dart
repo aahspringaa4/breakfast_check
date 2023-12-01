@@ -75,7 +75,10 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('조식 체크 앱'),
+          title: const Text(
+            '조식 체크 앱',
+            style: TextStyle(fontFamily: 'Jalnan2'),
+          ),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.dark_mode),
@@ -99,7 +102,10 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
           itemCount: users.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text(isEnglishMode ? users[index].enName : users[index].name),
+              title: Text(
+                isEnglishMode ? users[index].enName : users[index].name,
+                style: TextStyle(fontFamily: 'Jalnan2'),
+              ),
               trailing: users[index].isCheck && users[index].checkedTime != null
                   ? Text(DateFormat(
                       isEnglishMode ? 'yyyy-MM-dd (E) a hh:mm:ss' : 'yy년 MM월 dd일 (E) a HH시 mm분 ss초',
