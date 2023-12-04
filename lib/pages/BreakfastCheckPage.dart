@@ -106,15 +106,15 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
                 isEnglishMode ? users[index].enName : users[index].name,
                 style: TextStyle(fontFamily: 'Jalnan2'),
               ),
-              trailing: users[index].isCheck && users[index].checkedTime != null
-                  ? Text(DateFormat(
-                      isEnglishMode ? 'yyyy-MM-dd (E) a hh:mm:ss' : 'yy년 MM월 dd일 (E) a HH시 mm분 ss초',
-                      isEnglishMode ? 'en_US' : 'ko_KR').format(users[index].checkedTime!))
-                  : null,
               leading: Checkbox(
                 value: users[index].isCheck,
                 onChanged: (value) => _toggleCheck(index, value),
               ),
+              trailing: users[index].isCheck && users[index].checkedTime != null
+                  ? Text(DateFormat(
+                      isEnglishMode ? 'EEE dd MM\n yyyy h:mm:ss a' : 'yyyy년 MM월 dd일 (E)\n a HH시 mm분 ss초',
+                      isEnglishMode ? 'en_US' : 'ko_KR').format(users[index].checkedTime!))
+                  : null,
             );
           },
         ),
