@@ -57,10 +57,9 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
 
   void _toggleCheck(int index, bool? value) {
     if (value != null) {
-      setState(() {
-        users[index].isCheck = value;
-        _saveCheck(index, value);
-      });
+      setState(() {});
+      users[index].isCheck = value;
+      _saveCheck(index, value);
     }
   }
 
