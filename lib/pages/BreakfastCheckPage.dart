@@ -55,7 +55,7 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
     }
   }
 
-  void _toggleCheck(int index, bool? value) {
+  void clickCheckBox(int index, bool? value) {
     if (value != null) {
       setState(() {});
       users[index].isCheck = value;
@@ -107,7 +107,7 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
               ),
               leading: Checkbox(
                 value: users[index].isCheck,
-                onChanged: (value) => _toggleCheck(index, value),
+                onChanged: (value) => clickCheckBox(index, value),
               ),
               trailing: users[index].isCheck && users[index].checkedTime != null
                   ? Text(DateFormat(
