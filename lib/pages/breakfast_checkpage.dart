@@ -1,14 +1,16 @@
-import 'package:breakfast_check/models/inputform.dart';
+import 'package:breakfast_check/models/inputForm.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 
 class BreakfastCheckPage extends StatefulWidget {
+  const BreakfastCheckPage({super.key});
+
   @override
-  _BreakfastCheckPageState createState() => _BreakfastCheckPageState();
+  BreakfastCheckPageState createState() => BreakfastCheckPageState();
 }
 
-class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
+class BreakfastCheckPageState extends State<BreakfastCheckPage> {
   late final Box<InputForm> box;
   final List<InputForm> users = [
     InputForm(name: '유현명', enName: 'Hyun', isCheck: false),
@@ -35,9 +37,9 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
       users.clear();
       users.addAll(box.values);
     } else {
-      users.forEach((user) {
+      for (var user in users) {
         box.add(user);
-      });
+      }
     }
     setState(() {});
   }
@@ -80,7 +82,7 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.dark_mode),
+              icon: const Icon(Icons.dark_mode),
               onPressed: () {
                 setState(() {
                   isDarkMode = !isDarkMode;
@@ -88,7 +90,7 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.language),
+              icon: const Icon(Icons.language),
               onPressed: () {
                 setState(() {
                   isEnglishMode = !isEnglishMode;
@@ -103,7 +105,7 @@ class _BreakfastCheckPageState extends State<BreakfastCheckPage> {
             return ListTile(
               title: Text(
                 isEnglishMode ? users[index].enName : users[index].name,
-                style: TextStyle(fontFamily: 'Jalnan2'),
+                style: const TextStyle(fontFamily: 'Jalnan2'),
               ),
               leading: Checkbox(
                 value: users[index].isCheck,
