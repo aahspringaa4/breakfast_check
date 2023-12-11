@@ -1,4 +1,4 @@
-import 'package:breakfast_check/models/inputForm.dart';
+import 'package:breakfast_check/models/input_form.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
