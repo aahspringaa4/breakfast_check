@@ -1,7 +1,9 @@
 import 'package:breakfast_check/models/input_form.dart';
+import 'package:breakfast_check/models/mode_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class BreakfastCheckPage extends StatefulWidget {
   const BreakfastCheckPage({super.key});
@@ -17,9 +19,6 @@ class BreakfastCheckPageState extends State<BreakfastCheckPage> {
     InputForm(name: '김민채', enName: 'David', isCheck: false),
     InputForm(name: 'adbr', enName: 'bora', isCheck: false),
   ];
-
-  bool isEnglishMode = false;
-  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -67,58 +66,67 @@ class BreakfastCheckPageState extends State<BreakfastCheckPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '조식 체크 앱',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      darkTheme: ThemeData.dark(),
-      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            '조식 체크 앱',
-            style: TextStyle(fontFamily: 'Jalnan2'),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.dark_mode),
-              onPressed: () {
-                setState(() {
-                  isDarkMode = !isDarkMode;
-                });
-              },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: ((context) => ModeState()))
+      ],
+      child: Consumer<ModeState>(
+        builder: (BuildContext context, ModeState modeState, Widget? child) { 
+          return MaterialApp(
+            title: '조식 체크 앱',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
             ),
-            IconButton(
-              icon: const Icon(Icons.language),
-              onPressed: () {
-                setState(() {
-                  isEnglishMode = !isEnglishMode;
-                });
-              },
+            darkTheme: ThemeData.dark(),
+            themeMode: context.watch<ModeState>().isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            home: Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                  '조식 체크 앱',
+                  style: TextStyle(fontFamily: 'Jalnan2'),
+                ),
+                actions: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.dark_mode),
+                    onPressed: () {
+                      setState(() {
+                        context.read<ModeState>().changeLight();
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.language),
+                    onPressed: () {
+                      setState(() {
+                        context.read<ModeState>().changeLanguage();
+                      });
+                    },
+                  ),
+                ],
+              ),
+              body: ListView.builder(
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(
+                      context.read<ModeState>().isEnglishMode ? users[index].enName : users[index].name,
+                      style: const TextStyle(fontFamily: 'Jalnan2'),
+                    ),
+                    leading: Checkbox(
+                      value: users[index].isCheck,
+                      onChanged: (value) => clickCheckBox(index, value),
+                    ),
+                    trailing: users[index].isCheck && users[index].checkedTime != null
+                        ? Text(DateFormat(
+                            context.watch<ModeState>().isEnglishMode ? 'EEE dd MM\n yyyy h:mm:ss a' : 'yyyy년 MM월 dd일 (E)\n a HH시 mm분 ss초',
+                            context.watch<ModeState>().isEnglishMode ? 'en_US' : 'ko_KR').format(users[index].checkedTime!))
+                        : null,
+                  );
+                },
+              ),
             ),
-          ],
-        ),
-        body: ListView.builder(
-          itemCount: users.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(
-                isEnglishMode ? users[index].enName : users[index].name,
-                style: const TextStyle(fontFamily: 'Jalnan2'),
-              ),
-              leading: Checkbox(
-                value: users[index].isCheck,
-                onChanged: (value) => clickCheckBox(index, value),
-              ),
-              trailing: users[index].isCheck && users[index].checkedTime != null
-                  ? Text(DateFormat(
-                      isEnglishMode ? 'EEE dd MM\n yyyy h:mm:ss a' : 'yyyy년 MM월 dd일 (E)\n a HH시 mm분 ss초',
-                      isEnglishMode ? 'en_US' : 'ko_KR').format(users[index].checkedTime!))
-                  : null,
-            );
-          },
-        ),
+          );
+        }
       ),
     );
   }
